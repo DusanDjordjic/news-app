@@ -1,16 +1,17 @@
+import { ActivatedRoute } from "./activatedRoute/activatedRoute";
 import { Observable } from "./lib/observable";
 import { Observer } from "./lib/observer";
 
 /**
  * @description
  * Router klasa je singleton;
- * @description
+ *
  * router => instanca je observable
  * sa njim je moguce menjati rute
- * @description
+ *
  * navigate => metoda koja salje novu vrednost
  * salje u obliku { path: string, params: { [key: string] : string } }
- * @description
+ *
  * activatedRoute$ => observable koji okida
  * kada promeni ruta tj. kada se promene parametri
  */
@@ -18,7 +19,7 @@ import { Observer } from "./lib/observer";
 export class Router extends Observable<any> {
   static instance: Router | undefined = undefined;
   private pRoutes: { path: string; component: string }[] = [];
-
+  private activatedRoute = ActivatedRoute.getInstance();
   set routes(routes: { path: string; component: string }[]) {
     this.pRoutes = routes;
   }
@@ -45,6 +46,14 @@ export class Router extends Observable<any> {
       return;
     }
     // Nasli smo trenutnu rutu sad treba da napravimo activatedRoute Objekat od te rute
+    if (this.activatedRoute) {
+      const activatedRoute = this.activatedRoute.constructRoute({
+        route: route.path,
+        requested: this.value,
+      });
+      if (activatedRoute) this.activatedRoute.setValue(activatedRoute);
+    }
+
     this.observers.forEach((obs) => obs.update(route));
   }
 
@@ -191,7 +200,6 @@ export class Router extends Observable<any> {
             route: route.path,
             requested: this.value,
           });
-          // Treba vratiti trenutnu rutu i trazenu rutu da bi activatedRoute mogao da odvoji dinamicne od staticnih delova;
           return route;
         } else {
         }
@@ -240,22 +248,24 @@ router.routes = [
   },
 ];
 
-const routeObserver = new Observer<any>((value: any) =>
-  console.warn("OBSERVER, TRAZENA RUTA JE:", value)
-);
+// ! Za probu
 
-router.subscribe(routeObserver);
+// const routeObserver = new Observer<any>((value: any) =>
+//   console.warn("OBSERVER, TRAZENA RUTA JE:", value)
+// );
 
-router.notify();
+// router.subscribe(routeObserver);
 
-router.navigate("/categories");
-router.navigate("categories", "education", "89");
-router.navigate("/categories", "business", "100");
-router.navigate("/id-od-post-a");
-router.navigate("/categories", "nemanja");
-router.navigate("/categories", "business", "134");
-router.navigate("/categories", "business", "555");
-router.navigate("/categories", "business", "555", "details");
-router.navigate("/categories", "business", "555", "likes");
-router.navigate("/search");
-router.navigate("/search", "dusan");
+// router.notify();
+
+// router.navigate("/categories");
+// router.navigate("categories", "education", "89");
+// router.navigate("/categories", "business", "100");
+// router.navigate("/id-od-post-a");
+// router.navigate("/categories", "nemanja");
+// router.navigate("/categories", "business", "134");
+// router.navigate("/categories", "business", "555");
+// router.navigate("/categories", "business", "555", "details");
+// router.navigate("/categories", "business", "555", "likes");
+// router.navigate("/search");
+// router.navigate("/search", "dusan");
