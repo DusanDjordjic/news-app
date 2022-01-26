@@ -2,7 +2,7 @@ import { Observable } from "../lib/observable";
 import { IActivatedRoute } from "../models/activatedRoute.interface";
 
 export class ActivatedRoute extends Observable<IActivatedRoute> {
-  static instance: ActivatedRoute | undefined = undefined;
+  private static instance: ActivatedRoute | undefined = undefined;
   constructor() {
     super({ path: location.pathname, params: {} });
     if (ActivatedRoute.instance === undefined) {
@@ -15,6 +15,15 @@ export class ActivatedRoute extends Observable<IActivatedRoute> {
     if (!ActivatedRoute.instance)
       ActivatedRoute.instance = new ActivatedRoute();
     return ActivatedRoute.instance;
+  }
+
+  /**
+   * @description
+   * Moramo napravini novu metodu zato sto je
+   * setValue protected
+   */
+  setActivatedRoute(newActivatedRoute: IActivatedRoute) {
+    this.setValue(newActivatedRoute);
   }
   constructRoute(data: { route: string; requested: string }) {
     const { route, requested } = data;
@@ -63,11 +72,8 @@ export class ActivatedRoute extends Observable<IActivatedRoute> {
       if (splitedRoutePart.startsWith(":")) {
         // substring(1) da bi smo izbrisali ":"
         result.params[splitedRoutePart.substring(1)] = splitedRequestedPart;
-        continue;
       }
     }
     return result;
   }
 }
-
-const activatedRoute = new ActivatedRoute();

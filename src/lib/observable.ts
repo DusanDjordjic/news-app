@@ -9,8 +9,12 @@ import { Observer } from "./observer";
  * sa setValue se postavlja nova vrednost i poziva se notify
  */
 export class Observable<T> {
-  observers: Observer<T>[] = [];
-  value: T;
+  protected observers: Observer<T>[] = [];
+  /**
+   * @description
+   * Poslednja vrednost prosledjena obsreverima
+   */
+  protected value: T;
 
   constructor(firstValue: T) {
     this.value = firstValue;
@@ -24,9 +28,14 @@ export class Observable<T> {
     this.observers = this.observers.filter((obs) => obs !== observer);
   }
 
-  setValue(newValue: T) {
+  /**
+   * @protected
+   * Da ne bi neko mogao samo da postavi vrednost
+   * vec mozemo iskontrolisati koju i kakvu vrednost moze da postavi
+   */
+  protected setValue(newValue: T) {
     this.value = newValue;
-    return this.notify();
+    this.notify();
   }
 
   notify() {
