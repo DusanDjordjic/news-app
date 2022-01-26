@@ -9,9 +9,11 @@ const activatedRouteObserver = new Observer<IActivatedRoute>(
     console.log("ActivatedRouteObserver:", value);
   }
 );
-activatedRoute?.subscribe(activatedRouteObserver);
+activatedRoute.subscribe(activatedRouteObserver);
 
 const router = Router.getInstance();
+router.navigate("/");
 router.navigate("categories", "health", "109");
-router.navigate("search", "health");
+router.navigate("categories/business/100/details");
+router.navigate("/search", "health");
 router.navigate("my-post-id");

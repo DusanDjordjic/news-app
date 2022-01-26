@@ -1,30 +1,32 @@
 import { ActivatedRoute } from "./activatedRoute/activatedRoute";
 import { Observable } from "./lib/observable";
+import { Route } from "./models/route.interface";
 
 /**
  * @description
  * Router klasa je singleton;
  *
- * router => instanca je observable
- * sa njim je moguce menjati rute
+ * pRoutes => privatne rute. Ne postoji get
  *
- * navigate => metoda koja salje novu vrednost
- * salje u obliku { path: string, params: { [key: string] : string } }
+ * navigate => metoda koja salje novu vrednost rutu pretvara
+ * u IActivatedRoute. Taj objekat salje ActivatedRoute klasi
+ * a svom obsrevable-u salje novu putanju
  *
- * activatedRoute$ => observable koji okida
- * kada promeni ruta tj. kada se promene parametri
+ * activatedRoute => observable koji cuva trenutnu rutu u
+ * obliku IActivatedRoute. Salje mu se nova vrendost kada se promeni ruta
+ * i ta ruta prodje svu validaciju.
  */
 
-export class Router extends Observable<any> {
-  static instance: Router | undefined = undefined;
-  private pRoutes: { path: string; component: string }[] = [];
+export class Router extends Observable<string> {
+  private static instance: Router | undefined = undefined;
+  /**
+   * @description privatne rute, postoji samo set
+   */
+  private pRoutes: Route[] = [];
   private activatedRoute = ActivatedRoute.getInstance();
-  set routes(routes: { path: string; component: string }[]) {
-    this.pRoutes = routes;
-  }
 
-  get routes() {
-    return this.pRoutes;
+  set routes(routes: Route[]) {
+    this.pRoutes = routes;
   }
 
   constructor(firstValue: any) {
@@ -39,21 +41,31 @@ export class Router extends Observable<any> {
     if (!Router.instance) Router.instance = new Router(location.pathname);
     return Router.instance;
   }
+
   override notify(): void {
     const route = this.getRequestedRouteObject();
     if (route == null) {
+      /**
+       * Bilo bi dobro da se napravi Logger class
+       * koji ce da prikazuje greske paput ove
+       *
+       * Nije primarno!
+       */
       console.warn(`Ne postoji ruta ${this.value}`);
       return;
     }
+
     // Nasli smo trenutnu rutu sad treba da napravimo activatedRoute Objekat od te rute
 
     const activatedRoute = this.activatedRoute.constructRoute({
       route: route.path,
       requested: this.value,
     });
-    if (activatedRoute) this.activatedRoute.setValue(activatedRoute);
+    // Saljemo novu vrednost nasem observable-u
+    this.activatedRoute.setActivatedRoute(activatedRoute);
 
-    this.observers.forEach((obs) => obs.update(route));
+    // Saljemo novu putanju observerima
+    this.observers.forEach((obs) => obs.update(route.path));
   }
 
   navigate(...routeParts: string[]) {
@@ -67,32 +79,36 @@ export class Router extends Observable<any> {
 
     this.setValue(nextUrl);
   }
-  getRequestedRouteObject() {
-    /**
-     * Pronaci aktivni rutu
-     * Zahtevana ruta je ona koja je trenutno aktivna
-     *
-     * @description
-     * Prvo podelimo zahtevanu rutu po "/" da bi smo dobili delove koji cine putanju
-     * Zatim to isto uradimo za sve registrovane rute
-     * Ako su duzine nizova koje smo dobili isti onda se rute mozda poklapaju
-     * Ako duzine nisu iste sigurno se ne poklapaju
-     *
-     * Treba da prodjemo jedan po jedan element i da vidimo da se poklapaju
-     * Ako element koji dolazi iz registrovane putanje pocinje sa ":"
-     * znaci da je dinamicka ruta i tu ne gledamo nista.
-     * Sve se poklapa sa dinamickim parametrom!
-     */
+  /**
+   * @description
+   * Prvo podelimo zahtevanu rutu po "/" da bi smo dobili delove koji cine putanju.
+   * Zatim to isto uradimo za sve registrovane rute.
+   *
+   * Ako su duzine nizova koje smo dobili isti onda se rute mozda poklapaju.
+   * Ako duzine nisu iste sigurno se ne poklapaju.
+   *
+   * Treba da prodjemo jedan po jedan element i da vidimo da se poklapaju
+   * Ako element koji dolazi iz registrovane putanje pocinje sa ":" znaci da je dinamicka ruta.
+   *
+   * Ako se naletni na dimacku rutu, proverava se da li se parametar na indeksu "i" (drugi, treci , deseti, ...)
+   * poklapa sa nekim drugim parametrom na tom istom indeksu u bilo kojoj drugoj ruti.
+   *
+   * Ako se poklapa znaci da je ta requested ruta namenjena nekom drugom endpoint-u
+   * (u sustini nekoj drugoj ruti sa kojom se poklapa, a ne sa tom dinamickom).
+   *
+   * Ako ne onda je gledamo kao dinamicku!
+   */
+  private getRequestedRouteObject() {
     const requestedPathValues = this.value.split("/");
     // Shift zato sto svaka ruta pozinje sa "/" tako da ce biti jedan prazan string na pocetku
     requestedPathValues.shift();
-    // console.log({ requestedPathValues });
-    for (let r = 0; r < this.routes.length; r++) {
+
+    for (let r = 0; r < this.pRoutes.length; r++) {
       /**
        * @description
        * Trenutna ruta u petlji
        */
-      const route = this.routes[r];
+      const route = this.pRoutes[r];
       /**
        * @description
        * Delovi trenutne rute podeljeni po "/"
@@ -152,7 +168,7 @@ export class Router extends Observable<any> {
              * Ako se poklapa postavljamo existsInRoutes = true
              *
              */
-            this.routes.forEach((route) => {
+            this.pRoutes.forEach((route) => {
               /**
                * @description
                * Trenutna ruta podeljena na delove po "/"
@@ -171,9 +187,8 @@ export class Router extends Observable<any> {
                */
               const splitedRouteValue = splitedRoute[i];
 
-              if (splitedRouteValue === requestedRoutePart) {
+              if (splitedRouteValue === requestedRoutePart)
                 existsInRoutes = true;
-              }
             });
 
             /**
@@ -189,19 +204,10 @@ export class Router extends Observable<any> {
            * Posto ruta nije dinamicka
            * Ako nisu isti delovi url-a ruta se ne poklapa
            */
-          if (requestedRoutePart !== routePart) {
-            routesMatch = false;
-          }
+          if (requestedRoutePart !== routePart) routesMatch = false;
         }
 
-        if (routesMatch) {
-          console.warn("FOUND: ", {
-            route: route.path,
-            requested: this.value,
-          });
-          return route;
-        } else {
-        }
+        if (routesMatch) return route;
       }
     }
     return null;
@@ -210,8 +216,8 @@ export class Router extends Observable<any> {
 
 /**
  * @description
+ * Instanca Router klase.
  * Prilikom ucitavanja aplikacije router uzima trenutu vrendost pathname-a
- *
  */
 const router = new Router(location.pathname);
 
@@ -245,25 +251,3 @@ router.routes = [
     component: "Search results",
   },
 ];
-
-// ! Za probu
-
-// const routeObserver = new Observer<any>((value: any) =>
-//   console.warn("OBSERVER, TRAZENA RUTA JE:", value)
-// );
-
-// router.subscribe(routeObserver);
-
-// router.notify();
-
-// router.navigate("/categories");
-// router.navigate("categories", "education", "89");
-// router.navigate("/categories", "business", "100");
-// router.navigate("/id-od-post-a");
-// router.navigate("/categories", "nemanja");
-// router.navigate("/categories", "business", "134");
-// router.navigate("/categories", "business", "555");
-// router.navigate("/categories", "business", "555", "details");
-// router.navigate("/categories", "business", "555", "likes");
-// router.navigate("/search");
-// router.navigate("/search", "dusan");
