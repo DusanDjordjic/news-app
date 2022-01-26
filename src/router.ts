@@ -1,6 +1,5 @@
 import { ActivatedRoute } from "./activatedRoute/activatedRoute";
 import { Observable } from "./lib/observable";
-import { Observer } from "./lib/observer";
 
 /**
  * @description
@@ -37,6 +36,7 @@ export class Router extends Observable<any> {
     }
   }
   static getInstance() {
+    if (!Router.instance) Router.instance = new Router(location.pathname);
     return Router.instance;
   }
   override notify(): void {
@@ -46,13 +46,12 @@ export class Router extends Observable<any> {
       return;
     }
     // Nasli smo trenutnu rutu sad treba da napravimo activatedRoute Objekat od te rute
-    if (this.activatedRoute) {
-      const activatedRoute = this.activatedRoute.constructRoute({
-        route: route.path,
-        requested: this.value,
-      });
-      if (activatedRoute) this.activatedRoute.setValue(activatedRoute);
-    }
+
+    const activatedRoute = this.activatedRoute.constructRoute({
+      route: route.path,
+      requested: this.value,
+    });
+    if (activatedRoute) this.activatedRoute.setValue(activatedRoute);
 
     this.observers.forEach((obs) => obs.update(route));
   }
@@ -221,7 +220,6 @@ router.routes = [
     path: "/",
     component: "All posts",
   },
-
   {
     path: "/:id",
     component: "Single post",

@@ -12,6 +12,8 @@ export class ActivatedRoute extends Observable<IActivatedRoute> {
     }
   }
   static getInstance() {
+    if (!ActivatedRoute.instance)
+      ActivatedRoute.instance = new ActivatedRoute();
     return ActivatedRoute.instance;
   }
   constructRoute(data: { route: string; requested: string }) {

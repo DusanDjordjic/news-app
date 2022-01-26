@@ -12,6 +12,6 @@ const activatedRouteObserver = new Observer<IActivatedRoute>(
 activatedRoute?.subscribe(activatedRouteObserver);
 
 const router = Router.getInstance();
-router?.navigate("categories", "health", "109");
-router?.navigate("search", "health");
-router?.navigate("my-post-id");
+router.navigate("categories", "health", "109");
+router.navigate("search", "health");
+router.navigate("my-post-id");
