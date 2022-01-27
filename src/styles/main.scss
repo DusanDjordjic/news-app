@@ -23,3 +23,42 @@ footer {
 .container {
   min-height: 80vh;
 }
+.buttons-wrapper {
+  display: flex;
+  gap: 1rem;
+  button {
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    color: rgb(109, 109, 109);
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    &.active {
+      background-color: rgb(217, 234, 250);
+      border-color: rgb(138, 150, 158);
+      color: rgb(0, 28, 47);
+      &:hover {
+        background-color: rgb(200, 218, 236);
+      }
+    }
+    &.disabled {
+      cursor: default;
+      background-color: #eee;
+      border: 1px solid #aaa;
+      color: rgb(168, 168, 168);
+      &:hover {
+        background-color: #eee;
+        border: 1px solid #aaa;
+        color: rgb(168, 168, 168);
+      }
+    }
+    &:hover {
+      background-color: rgb(217, 234, 250);
+      border-color: rgb(138, 150, 158);
+      color: rgb(0, 28, 47);
+    }
+  }
+}

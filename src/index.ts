@@ -1,7 +1,11 @@
 import { ActivatedRoute } from "./activatedRoute/activatedRoute";
+import { FooterComponent } from "./components/footer.component";
+import { HeaderComponent } from "./components/header.component";
+import { factory } from "./factory/factory";
 import { Observer } from "./lib/observer";
 import { IActivatedRoute } from "./models/activatedRoute.interface";
 import { BaseComponent } from "./models/base-component.model";
+import { DomElement } from "./models/dom-element.interface";
 import { IRoute } from "./models/route.interface";
 import { Router } from "./router";
 
@@ -33,7 +37,10 @@ class App extends BaseComponent {
 
   private activatedComponentId: number = -1;
   private activatedComponent: any;
-
+  usedComponents = {
+    headerComponent: new HeaderComponent(this),
+    footerComponent: new FooterComponent(this),
+  };
   constructor() {
     super(null);
     if (App.instance === undefined) {
@@ -43,13 +50,7 @@ class App extends BaseComponent {
        * Pozivamo notify da bi uskladili app sa
        * trenutnom rutom.
        */
-      // this.router.notify();
-      this.router.navigate("/hello");
-      // this.router.navigate("/");
-      // this.router.navigate("/");
-      // this.router.navigate("/prvi-post");
-      // this.router.navigate("/drugi-post");
-      // this.router.navigate("/teci-post");
+      this.router.notify();
     } else {
       throw new Error("Use App.getInstance() instead of 'new'");
     }
@@ -71,7 +72,17 @@ class App extends BaseComponent {
     this.render();
   }
   render() {
-    appRoot.replaceChildren(this.activatedComponent.render());
+    const domTree: DomElement = {
+      tag: "div",
+      classes: ["app"],
+      children: [
+        this.usedComponents.headerComponent.getTree(),
+        this.activatedComponent.getTree(),
+        this.usedComponents.footerComponent.getTree(),
+      ],
+    };
+    const domElement = factory(domTree);
+    appRoot.replaceChildren(domElement);
   }
 }
 

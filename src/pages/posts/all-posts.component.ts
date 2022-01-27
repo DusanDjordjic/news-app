@@ -1,36 +1,33 @@
-import { FooterComponent } from "../../components/footer.component";
-import { HeaderComponent } from "../../components/header.component";
 import { factory } from "../../factory/factory";
 import { BaseComponent } from "../../models/base-component.model";
 import { DomElement } from "../../models/dom-element.interface";
+import { INewsQueryParams } from "../../models/news-query-params.interface";
 
 export class AllPostsComponent extends BaseComponent {
   constructor(parent: BaseComponent | null) {
     super(parent);
   }
 
+  queryParamsChanged(newParams: INewsQueryParams) {
+    console.log(newParams);
+  }
+  getTree() {
+    const tree: DomElement = {
+      tag: "div",
+      classes: ["container"],
+      children: [
+        {
+          tag: "h1",
+          textContent: "All Posts",
+        },
+      ],
+    };
+    return tree;
+  }
   render(): HTMLElement {
     const self = this;
 
-    const tree: DomElement = {
-      tag: "div",
-      children: [
-        new HeaderComponent(self).getTree(),
-        {
-          tag: "div",
-          classes: ["container"],
-          children: [
-            {
-              tag: "h1",
-              textContent: "All Posts",
-            },
-          ],
-        },
-        new FooterComponent(self).getTree(),
-      ],
-    };
-
-    const domElement = factory(tree);
+    const domElement = factory(this.getTree());
 
     return domElement;
   }
