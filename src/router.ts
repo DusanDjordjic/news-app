@@ -15,6 +15,8 @@ import { IRoute } from "./models/route.interface";
  * activatedRoute => observable koji cuva trenutnu rutu u
  * obliku IActivatedRoute. Salje mu se nova vrendost kada se promeni ruta
  * i ta ruta prodje svu validaciju.
+ *
+ * value => cuva trenutnu rutu u svom pravom obliku.
  */
 
 export class Router extends Observable<string> {
@@ -42,6 +44,19 @@ export class Router extends Observable<string> {
     return Router.instance;
   }
 
+  /**
+   *
+   * @description
+   * Desava se to da je Router observable koji vraca string
+   * a nama ja u App klasi potrebna odgovarajuca komponenta da bi smo je ucitali
+   * a ne samo putanja.
+   *
+   * Zato moram da napravim metodu koja ce da mi vrati trenutno
+   * aktivnu komponentu
+   */
+  getActiveComponent(path: string) {
+    return this.pRoutes.filter((route) => route.path === path)[0];
+  }
   override notify(): void {
     const route = this.getRequestedRouteObject();
     if (route == null) {
@@ -61,11 +76,12 @@ export class Router extends Observable<string> {
       route: route.path,
       requested: this.value,
     });
+
     // Saljemo novu vrednost nasem observable-u
     this.activatedRoute.setActivatedRoute(activatedRoute);
 
     // Saljemo novu putanju observerima
-    this.observers.forEach((obs) => obs.update(route.path));
+    this.observers.forEach((obs) => obs.update(this.value));
   }
 
   navigate(...routeParts: string[]) {

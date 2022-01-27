@@ -3,17 +3,47 @@ import { Observer } from "./lib/observer";
 import { IActivatedRoute } from "./models/activatedRoute.interface";
 import { Router } from "./router";
 
-const activatedRoute = ActivatedRoute.getInstance();
-const activatedRouteObserver = new Observer<IActivatedRoute>(
-  (value: IActivatedRoute) => {
-    console.log("ActivatedRouteObserver:", value);
+class App {
+  private activatedRoute: ActivatedRoute = ActivatedRoute.getInstance();
+  private router: Router = Router.getInstance();
+  private static instance: App | undefined = undefined;
+  private routerObserver: Observer<string> = new Observer(
+    (newRoute: string) => {
+      console.log({ newRoute });
+    }
+  );
+  private activatedRouteObserver: Observer<IActivatedRoute> = new Observer(
+    (newActivatedRoute: IActivatedRoute) => {
+      console.log(newActivatedRoute);
+      const component = this.router.getActiveComponent(
+        newActivatedRoute.path
+      ).component;
+      console.log({ component });
+      /**
+       * Ovde treba da ucitamo komponentu
+       */
+    }
+  );
+  constructor() {
+    if (App.instance === undefined) {
+      App.instance = this;
+      this.router.subscribe(this.routerObserver);
+      this.activatedRoute.subscribe(this.activatedRouteObserver);
+      /**
+       * Pozivamo notify da bi uskladili app sa
+       * trenutnom rutom.
+       */
+      this.router.notify();
+      this.router.navigate("hello");
+      this.router.navigate("categories", "123");
+    } else {
+      throw new Error("Use App.getInstance() instead of 'new'");
+    }
   }
-);
-activatedRoute.subscribe(activatedRouteObserver);
+  static getInstance() {
+    if (App.instance === undefined) App.instance = new App();
+    return App.instance;
+  }
+}
 
-const router = Router.getInstance();
-router.navigate("/");
-router.navigate("categories", "health", "109");
-router.navigate("categories/business/100/details");
-router.navigate("/search", "health");
-router.navigate("my-post-id");
+const app = new App();
