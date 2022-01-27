@@ -25,7 +25,11 @@ export class Observable<T> {
   }
 
   unsubscribe(observer: Observer<T>) {
-    this.observers = this.observers.filter((obs) => obs !== observer);
+    this.observers = this.observers.filter((obs) => {
+      // console.log({ obs, observer });
+      // console.log(obs === observer);
+      return obs !== observer;
+    });
   }
 
   /**
@@ -39,7 +43,13 @@ export class Observable<T> {
   }
 
   notify() {
-    this.observers.forEach((obs) => obs.update(this.value));
+    this.observers.forEach((obs) => {
+      /**
+       * Provera da se obavezti samo observer koji postoji u nizu
+       * Zato sto se desava
+       */
+      if (this.observers.includes(obs)) obs.update(this.value);
+    });
   }
 
   notifyOne(observer: Observer<T>) {

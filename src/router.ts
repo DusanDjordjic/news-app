@@ -1,4 +1,9 @@
 import { ActivatedRoute } from "./activatedRoute/activatedRoute";
+import { AllCategoriesComponent } from "./components/categories/all-categories.component";
+import { SingleCategoryComponent } from "./components/categories/single-category.component";
+import { AllPostsComponent } from "./components/posts/all-posts.component";
+import { SinglePostComponent } from "./components/posts/single-post.component";
+import { SearchComponent } from "./components/search/serach.component";
 import { Observable } from "./lib/observable";
 import { IRoute } from "./models/route.interface";
 
@@ -92,8 +97,8 @@ export class Router extends Observable<string> {
     if (!nextUrl.startsWith("/")) {
       nextUrl = "/" + nextUrl;
     }
-
-    this.setValue(nextUrl);
+    console.log({ value: this.value, nextUrl });
+    if (this.value !== nextUrl) this.setValue(nextUrl);
   }
   /**
    * @description
@@ -239,31 +244,28 @@ const router = new Router(location.pathname);
 
 router.routes = [
   {
+    id: 1,
     path: "/",
-    component: "All posts",
+    component: AllPostsComponent,
   },
   {
+    id: 2,
     path: "/:id",
-    component: "Single post",
+    component: SinglePostComponent,
   },
   {
+    id: 3,
     path: "/categories",
-    component: "All post by categories",
+    component: AllCategoriesComponent,
   },
   {
+    id: 4,
     path: "/categories/:category",
-    component: "All posts of a single category",
+    component: SingleCategoryComponent,
   },
   {
-    path: "/categories/:category/:id",
-    component: "Signle post of a single category",
-  },
-  {
-    path: "/categories/:category/:id/details",
-    component: "Details of a signle post of a single category",
-  },
-  {
+    id: 5,
     path: "/search",
-    component: "Search results",
+    component: SearchComponent,
   },
 ];
