@@ -42,7 +42,7 @@ class App extends BaseComponent {
        */
       // this.router.notify();
       this.router.navigate("/hello");
-      this.router.navigate("/");
+      // this.router.navigate("/");
       // this.router.navigate("/");
       // this.router.navigate("/prvi-post");
       // this.router.navigate("/drugi-post");
@@ -68,7 +68,7 @@ class App extends BaseComponent {
     this.render();
   }
   render() {
-    this.activatedComponent.render();
+    appRoot.replaceChildren(this.activatedComponent.render());
   }
 }
 
