@@ -1,9 +1,9 @@
 import { ActivatedRoute } from "./activatedRoute/activatedRoute";
-import { AllCategoriesComponent } from "./components/categories/all-categories.component";
-import { SingleCategoryComponent } from "./components/categories/single-category.component";
-import { AllPostsComponent } from "./components/posts/all-posts.component";
-import { SinglePostComponent } from "./components/posts/single-post.component";
-import { SearchComponent } from "./components/search/serach.component";
+import { AllCategoriesComponent } from "./pages/categories/all-categories.component";
+import { SingleCategoryComponent } from "./pages/categories/single-category.component";
+import { AllPostsComponent } from "./pages/posts/all-posts.component";
+import { SinglePostComponent } from "./pages/posts/single-post.component";
+import { SearchComponent } from "./pages/search/search.component";
 import { Observable } from "./lib/observable";
 import { IRoute } from "./models/route.interface";
 

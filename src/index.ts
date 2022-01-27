@@ -3,8 +3,11 @@ import { Observer } from "./lib/observer";
 import { IActivatedRoute } from "./models/activatedRoute.interface";
 import { BaseComponent } from "./models/base-component.model";
 import { IRoute } from "./models/route.interface";
-
 import { Router } from "./router";
+
+// Styles
+import "./styles/global.scss";
+import "./styles/main.scss";
 
 /**
  * @description
