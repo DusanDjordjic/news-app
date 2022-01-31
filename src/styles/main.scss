@@ -224,6 +224,28 @@ footer {
     }
   }
 }
+.search-form {
+  margin: 0 auto;
+  width: 300px;
+  .form-group {
+    label {
+      display: block;
+      margin: 1rem 0;
+    }
+    input {
+      margin: 1rem 0;
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      &:focus {
+        outline: none;
+        border-color: #1c1c1c;
+      }
+    }
+  }
+}
+
 @media only screen and (min-width: 568px) {
   .posts-wrapper {
     grid-template-columns: repeat(2, 1fr);

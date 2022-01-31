@@ -4,6 +4,7 @@ import { INewsQueryParams } from "../models/news-query-params.interface";
 
 const newsUrl = "http://localhost:3000/news";
 const categoriesUrl = "http://localhost:3000/categories";
+const searchUrl = "http://localhost:3000/search";
 
 export class NewsService extends Observable<INewsQueryParams> {
   private static instance: NewsService | undefined = undefined;
@@ -75,7 +76,6 @@ export class NewsService extends Observable<INewsQueryParams> {
         newUrl += `${key}=${params[key]}&`;
       }
     }
-    console.log({ newUrl });
 
     return new Promise((resolve, reject) => {
       fetch(newUrl)
@@ -84,6 +84,16 @@ export class NewsService extends Observable<INewsQueryParams> {
           maxLength: data.maxLength,
           news: data.news.map((item: any) => new NewModel(item)),
         }))
+        .then((data) => resolve(data))
+        .catch((err) => reject(err));
+    });
+  }
+  getSearchResults(q: string) {
+    let newUrl = `${searchUrl}/${q}`;
+    return new Promise((resolve, reject) => {
+      fetch(newUrl)
+        .then((response) => response.json())
+        .then((data) => data.map((item: any) => new NewModel(item)))
         .then((data) => resolve(data))
         .catch((err) => reject(err));
     });

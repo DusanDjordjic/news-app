@@ -5,5 +5,4 @@ export interface DomElement {
   events?: { eventName: string; callback: (e: Event) => void }[];
   attributes?: { attName: string; attValue: string }[];
   children?: DomElement[];
-  styles?: [{ styleName: string; styleValue: string }];
 }

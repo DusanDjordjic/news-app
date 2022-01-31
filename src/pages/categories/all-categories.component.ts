@@ -21,7 +21,7 @@ export class AllCategoriesComponent extends BaseComponent implements OnDestroy {
       this.getCategories();
     }
   );
-  constructor(parent: BaseComponent) {
+  constructor(parent: BaseComponent | null) {
     super(parent);
     this.newsService.subscribe(this.onNewsParamsChange);
     this.getCategories();

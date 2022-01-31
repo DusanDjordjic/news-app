@@ -23,7 +23,7 @@ export class SingleCategoryComponent
       this.category = value.params.category;
       this.getNews();
     });
-  constructor(parent: BaseComponent) {
+  constructor(parent: BaseComponent | null) {
     super(parent);
     this.activatedRoute.subscribe(this.activatedRouteObserver);
     this.activatedRoute.notifyOne(this.activatedRouteObserver);

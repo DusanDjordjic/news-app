@@ -52,7 +52,7 @@ export class AllPostsComponent extends BaseComponent implements OnDestroy {
               classes: ["single-post"],
               children: [
                 {
-                  tag: "h3",
+                  tag: "h4",
                   textContent: singleNew.title,
                 },
                 {
