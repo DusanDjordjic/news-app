@@ -5,16 +5,27 @@ import { BaseComponent } from "../../models/base-component.model";
 import { DomElement } from "../../models/dom-element.interface";
 import { OnDestroy } from "../../models/onDestroy.interface";
 import { ActivatedRoute } from "../../activatedRoute/activatedRoute";
+import { NewsService } from "../../providers/news.service";
+import { NewModel } from "../../models/new.model";
+import { Router } from "../../router";
 
 export class SinglePostComponent extends BaseComponent implements OnDestroy {
   private activedRoute: ActivatedRoute = ActivatedRoute.getInstance();
-
+  private newsService: NewsService = NewsService.getInstance();
+  private singleNew: NewModel = new NewModel();
+  private router: Router = Router.getInstance();
   private activatedRouteObserver: Observer<IActivatedRoute> = new Observer(
     (newActivatedRoute: IActivatedRoute) => {
       console.log("SINGLE POST", newActivatedRoute.params);
+      this.getOneNew(newActivatedRoute.params.id);
     }
   );
-
+  getOneNew(id: string) {
+    this.newsService.getOneNew(id).then((data) => {
+      this.singleNew = data as NewModel;
+      this.reRender();
+    });
+  }
   constructor(parent: BaseComponent | null) {
     super(parent);
 
@@ -32,8 +43,38 @@ export class SinglePostComponent extends BaseComponent implements OnDestroy {
       classes: ["container"],
       children: [
         {
-          tag: "h1",
-          textContent: "Single Post",
+          tag: "header",
+          classes: ["sub-header"],
+          children: [
+            {
+              tag: "a",
+              events: [
+                {
+                  eventName: "click",
+                  callback: (e) => {
+                    e.preventDefault();
+                    this.router.navigate("/");
+                  },
+                },
+              ],
+              textContent: "Back",
+              classes: ["btn"],
+            },
+          ],
+        },
+        {
+          tag: "div",
+          classes: ["new-wrapper"],
+          children: [
+            {
+              tag: "h1",
+              textContent: this.singleNew.title,
+            },
+            {
+              tag: "p",
+              textContent: this.singleNew.content,
+            },
+          ],
         },
       ],
     };

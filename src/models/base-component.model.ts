@@ -1,5 +1,5 @@
 export abstract class BaseComponent {
-  private parent: BaseComponent | null;
+  protected parent: BaseComponent | null;
   constructor(
     /**
      * @description
@@ -12,7 +12,7 @@ export abstract class BaseComponent {
      * Props prosledjeni child komponenti koje mozemo proslediti iz parent componente
      * Na primer da u header componenti treba da bude disable-ovano menjaje `coutry-ja`
      */
-    props?: { [key: string]: string }
+    props?: { [key: string]: any }
   ) {
     this.parent = parent;
   }

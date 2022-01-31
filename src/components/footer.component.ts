@@ -3,11 +3,11 @@ import { DomElement } from "../models/dom-element.interface";
 import { Router } from "../router";
 
 export class FooterComponent extends BaseComponent {
-  private domTree: DomElement;
   private router: Router = Router.getInstance();
   constructor(parent: BaseComponent | null) {
     super(parent);
-    const self = this;
+  }
+  getTree() {
     const domTree: DomElement = {
       tag: "footer",
       children: [
@@ -18,10 +18,7 @@ export class FooterComponent extends BaseComponent {
         },
       ],
     };
-    this.domTree = domTree;
-  }
-  getTree(): DomElement {
-    return this.domTree;
+    return domTree;
   }
   render() {
     console.log("HEADER COMPONENT CANNOT BE RENDERED");

@@ -14,10 +14,10 @@ export class AllPostsComponent extends BaseComponent implements OnDestroy {
     this.getNews();
     this.newsService.subscribe(this.onNewsParamsChange);
   }
-  router: Router = Router.getInstance();
-  news: NewModel[] = [];
-  newsService: NewsService = NewsService.getInstance();
-  onNewsParamsChange: Observer<INewsQueryParams> = new Observer(
+  private router: Router = Router.getInstance();
+  private news: NewModel[] = [];
+  private newsService: NewsService = NewsService.getInstance();
+  private onNewsParamsChange: Observer<INewsQueryParams> = new Observer(
     (value: INewsQueryParams) => {
       this.getNews();
     }

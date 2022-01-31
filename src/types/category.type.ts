@@ -1,4 +1,4 @@
-export type CategoryType = "business" | "programming";
+export type CategoryType = "business" | "programming" | "health" | "general";
 // | "entertainment"
 // | "general"
 // | "health"

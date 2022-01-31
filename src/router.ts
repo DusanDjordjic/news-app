@@ -240,7 +240,8 @@ export class Router extends Observable<string> {
  * Instanca Router klase.
  * Prilikom ucitavanja aplikacije router uzima trenutu vrendost pathname-a
  */
-const router = new Router(location.pathname);
+// const router = new Router(location.pathname);
+const router = new Router("/categories");
 
 router.routes = [
   {
