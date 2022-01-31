@@ -78,7 +78,10 @@ export class NewsService extends Observable<INewsQueryParams> {
     return new Promise((resolve, reject) => {
       fetch(newUrl)
         .then((response) => response.json())
-        .then((data) => data.map((item: any) => new NewModel(item)))
+        .then((data) => ({
+          maxLength: data.maxLength,
+          news: data.news.map((item: any) => new NewModel(item)),
+        }))
         .then((data) => resolve(data))
         .catch((err) => reject(err));
     });

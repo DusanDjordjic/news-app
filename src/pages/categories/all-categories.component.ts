@@ -17,7 +17,7 @@ export class AllCategoriesComponent extends BaseComponent implements OnDestroy {
   };
   private onNewsParamsChange: Observer<INewsQueryParams> = new Observer(
     (value: INewsQueryParams) => {
-      console.log({ value });
+      this.usedComponents.singleCategories = [];
       this.getCategories();
     }
   );
@@ -32,8 +32,8 @@ export class AllCategoriesComponent extends BaseComponent implements OnDestroy {
       .then((data) => {
         console.log(data);
         this.allCategories = data as string[];
-        this.saveCategoryComponents();
         this.reRender();
+        this.saveCategoryComponents();
       })
       .catch((err) => console.log(err));
   }
