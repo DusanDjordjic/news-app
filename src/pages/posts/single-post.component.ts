@@ -67,6 +67,18 @@ export class SinglePostComponent extends BaseComponent implements OnDestroy {
           classes: ["new-wrapper"],
           children: [
             {
+              tag: "div",
+              classes: ["img-wrapper"],
+              children: [
+                {
+                  tag: "img",
+                  attributes: [
+                    { attName: "src", attValue: this.singleNew.url },
+                  ],
+                },
+              ],
+            },
+            {
               tag: "h1",
               textContent: this.singleNew.title,
             },

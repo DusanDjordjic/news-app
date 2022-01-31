@@ -75,6 +75,8 @@ export class NewsService extends Observable<INewsQueryParams> {
         newUrl += `${key}=${params[key]}&`;
       }
     }
+    console.log({ newUrl });
+
     return new Promise((resolve, reject) => {
       fetch(newUrl)
         .then((response) => response.json())

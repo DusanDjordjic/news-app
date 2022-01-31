@@ -95,6 +95,18 @@ export class SingleCategory extends BaseComponent {
                           textContent: singleNew.title,
                         },
                         {
+                          tag: "div",
+                          classes: ["img-wrapper"],
+                          children: [
+                            {
+                              tag: "img",
+                              attributes: [
+                                { attName: "src", attValue: singleNew.url },
+                              ],
+                            },
+                          ],
+                        },
+                        {
                           tag: "p",
                           textContent: singleNew.description,
                         },

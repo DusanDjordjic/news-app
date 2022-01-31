@@ -56,6 +56,16 @@ export class AllPostsComponent extends BaseComponent implements OnDestroy {
                   textContent: singleNew.title,
                 },
                 {
+                  tag: "div",
+                  classes: ["img-wrapper"],
+                  children: [
+                    {
+                      tag: "img",
+                      attributes: [{ attName: "src", attValue: singleNew.url }],
+                    },
+                  ],
+                },
+                {
                   tag: "p",
                   textContent: singleNew.description,
                 },

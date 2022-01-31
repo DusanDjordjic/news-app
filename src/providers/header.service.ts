@@ -4,7 +4,12 @@ import { Observer } from "../lib/observer";
 import { IActivatedRoute } from "../models/activatedRoute.interface";
 import { ComponentProps } from "../types/component-props.type";
 
-const routesToDisableHeader = ["/categories", "/search", "/:id"];
+const routesToDisableHeader = [
+  "/categories",
+  "/search",
+  "/:id",
+  "/categories/:category",
+];
 
 export class HeaderService extends Observable<ComponentProps> {
   private static instance: HeaderService | undefined = undefined;

@@ -1,4 +1,4 @@
-import { SingleCategory } from "../../components/single-category";
+import { SingleCategory } from "../../components/single-category.component";
 import { factory } from "../../factory/factory";
 import { Observer } from "../../lib/observer";
 import { BaseComponent } from "../../models/base-component.model";
