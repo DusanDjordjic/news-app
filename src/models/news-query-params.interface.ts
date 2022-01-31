@@ -1,11 +1,11 @@
 import { CategoryType } from "../types/category.type";
 
 export interface INewsQueryParams {
-  country: "us" | "gb";
+  country?: "srb" | "cro";
   category?: CategoryType;
   page?: number;
   pageSize?: number;
   q?: string;
-  sources?: string;
+  skip?: string;
   [key: string]: any;
 }

@@ -2,12 +2,15 @@ import { Observer } from "../lib/observer";
 import { BaseComponent } from "../models/base-component.model";
 import { DomElement } from "../models/dom-element.interface";
 import { HeaderService } from "../providers/header.service";
+import { NewsService } from "../providers/news.service";
 import { Router } from "../router";
 import { ComponentProps } from "../types/component-props.type";
 
 export class HeaderComponent extends BaseComponent {
   private router: Router = Router.getInstance();
   private headerService: HeaderService = HeaderService.getInstance();
+  private newsService: NewsService = NewsService.getInstance();
+
   private headerServiceObsrever: Observer<ComponentProps> = new Observer(
     (newProps: ComponentProps) => {
       this.areButtonsDisabled = newProps.areButtonsDisabled;
@@ -15,13 +18,13 @@ export class HeaderComponent extends BaseComponent {
   );
 
   areButtonsDisabled = false;
-  activeButton: "us" | "gb" = "us";
+  activeButton: "srb" | "cro" = "srb";
 
-  countryButtonClick(newValue: "us" | "gb") {
+  countryButtonClick(newValue: "srb" | "cro") {
     console.log(newValue);
     console.log(this.areButtonsDisabled);
     if (this.areButtonsDisabled) return;
-
+    this.newsService.setQueryParams({ country: newValue });
     this.activeButton = newValue;
     this.reRender();
   }
@@ -109,29 +112,29 @@ export class HeaderComponent extends BaseComponent {
               children: [
                 {
                   tag: "button",
-                  textContent: "US",
+                  textContent: "SRB",
                   classes: [
-                    this.activeButton === "us" ? "active" : "inactive",
+                    this.activeButton === "srb" ? "active" : "inactive",
                     this.areButtonsDisabled ? "disabled" : "enabled",
                   ],
                   events: [
                     {
                       eventName: "click",
-                      callback: this.countryButtonClick.bind(this, "us"),
+                      callback: this.countryButtonClick.bind(this, "srb"),
                     },
                   ],
                 },
                 {
                   tag: "button",
-                  textContent: "GB",
+                  textContent: "CRO",
                   classes: [
-                    this.activeButton === "gb" ? "active" : "inactive",
+                    this.activeButton === "cro" ? "active" : "inactive",
                     this.areButtonsDisabled ? "disabled" : "enabled",
                   ],
                   events: [
                     {
                       eventName: "click",
-                      callback: this.countryButtonClick.bind(this, "gb"),
+                      callback: this.countryButtonClick.bind(this, "cro"),
                     },
                   ],
                 },
